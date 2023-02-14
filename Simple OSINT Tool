@@ -1,0 +1,37 @@
+#!/bin/bash
+
+echo "Welcome to the Open Source Intelligence Gathering Tool"
+echo "Please select one of the following options:"
+echo "1. Domain Information"
+echo "2. IP Address Information"
+echo "3. Email Address Information"
+echo "4. Quit"
+
+read -p "Enter your choice (1-4): " choice
+
+if [ $choice -eq 1 ]; then
+  echo "Gathering Domain Information"
+  read -p "Enter the target domain: " domain
+  echo "Running whois lookup..."
+  whois $domain
+  echo "Running dig lookup..."
+  dig $domain
+  echo "Running nslookup..."
+  nslookup $domain
+elif [ $choice -eq 2 ]; then
+  echo "Gathering IP Address Information"
+  read -p "Enter the target IP address: " ip_address
+  echo "Running whois lookup..."
+  whois $ip_address
+  echo "Running nmap scan..."
+  nmap -T4 -A $ip_address
+elif [ $choice -eq 3 ]; then
+  echo "Gathering Email Address Information"
+  read -p "Enter the target email address: " email_address
+  echo "Running Hunter.io lookup..."
+  curl https://api.hunter.io/v2/email-verifier?email=$email_address&api_key=YOUR_API_KEY
+elif [ $choice -eq 4 ]; then
+  echo "Quitting"
+else
+  echo "Invalid input, please choose a value between 1 and 4"
+fi
