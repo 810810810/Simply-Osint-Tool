@@ -5,9 +5,11 @@ echo "Please select one of the following options:"
 echo "1. Domain Information"
 echo "2. IP Address Information"
 echo "3. Email Address Information"
-echo "4. Quit"
+echo "4. Website Information"
+echo "5. Social Media Information"
+echo "6. Quit"
 
-read -p "Enter your choice (1-4): " choice
+read -p "Enter your choice (1-6): " choice
 
 if [ $choice -eq 1 ]; then
   echo "Gathering Domain Information"
@@ -18,6 +20,8 @@ if [ $choice -eq 1 ]; then
   dig $domain
   echo "Running nslookup..."
   nslookup $domain
+  echo "Running SSL certificate check..."
+  openssl s_client -showcerts -servername $domain -connect $domain:443 </dev/null
 elif [ $choice -eq 2 ]; then
   echo "Gathering IP Address Information"
   read -p "Enter the target IP address: " ip_address
@@ -25,13 +29,34 @@ elif [ $choice -eq 2 ]; then
   whois $ip_address
   echo "Running nmap scan..."
   nmap -T4 -A $ip_address
+  echo "Running traceroute..."
+  traceroute $ip_address
 elif [ $choice -eq 3 ]; then
   echo "Gathering Email Address Information"
   read -p "Enter the target email address: " email_address
   echo "Running Hunter.io lookup..."
   curl https://api.hunter.io/v2/email-verifier?email=$email_address&api_key=YOUR_API_KEY
 elif [ $choice -eq 4 ]; then
+  echo "Gathering Website Information"
+  read -p "Enter the target website: " website
+  echo "Running SSL certificate check..."
+  openssl s_client -showcerts -servername $website -connect $website:443 </dev/null
+  echo "Running whatweb scan..."
+  whatweb $website
+  echo "Running nikto scan..."
+  nikto -h $website
+  echo "Running dirb scan..."
+  dirb http://$website
+elif [ $choice -eq 5 ]; then
+  echo "Gathering Social Media Information"
+  read -p "Enter the target username: " username
+  echo "Running social media search..."
+  echo "Searching Twitter for $username..."
+  twint -u $username --json -o $username.json --retweets
+  echo "Searching Instagram for $username..."
+  instagram-scraper $username -u "YOUR_USERNAME" -p "YOUR_PASSWORD" --maximum 50 --media-types image --media-metadata --destination $username
+elif [ $choice -eq 6 ]; then
   echo "Quitting"
 else
-  echo "Invalid input, please choose a value between 1 and 4"
+  echo "Invalid input, please choose a value between 1 and 6"
 fi
