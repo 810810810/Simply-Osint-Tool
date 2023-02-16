@@ -9,53 +9,53 @@ echo "4. Website Information"
 echo "5. Social Media Information"
 echo "6. Quit"
 
-read -p "Enter your choice (1-6): " choice
+read -r -p "Enter your choice (1-6): " choice
 
-if [ $choice -eq 1 ]; then
+if [ "$choice" -eq 1 ]; then
   echo "Gathering Domain Information"
-  read -p "Enter the target domain: " domain
+  read -r -p "Enter the target domain: " domain
   echo "Running whois lookup..."
-  whois $domain
+  whois "$domain"
   echo "Running dig lookup..."
-  dig $domain
+  dig "$domain"
   echo "Running nslookup..."
-  nslookup $domain
+  nslookup "$domain"
   echo "Running SSL certificate check..."
-  openssl s_client -showcerts -servername $domain -connect $domain:443 </dev/null
-elif [ $choice -eq 2 ]; then
+  openssl s_client -showcerts -servername "$domain" -connect "$domain":443 </dev/null
+elif [ "$choice" -eq 2 ]; then
   echo "Gathering IP Address Information"
-  read -p "Enter the target IP address: " ip_address
+  read -r -p "Enter the target IP address: " ip_address
   echo "Running whois lookup..."
-  whois $ip_address
+  whois "$ip_address"
   echo "Running nmap scan..."
-  nmap -T4 -A $ip_address
+  nmap -T4 -A "$ip_address"
   echo "Running traceroute..."
-  traceroute $ip_address
-elif [ $choice -eq 3 ]; then
+  traceroute "$ip_address"
+elif [ "$choice" -eq 3 ]; then
   echo "Gathering Email Address Information"
-  read -p "Enter the target email address: " email_address
+  read -r -p "Enter the target email address: " email_address
   echo "Running Hunter.io lookup..."
-  curl https://api.hunter.io/v2/email-verifier?email=$email_address&api_key=YOUR_API_KEY
-elif [ $choice -eq 4 ]; then
+  curl "https://api.hunter.io/v2/email-verifier?email=$email_address&api_key=YOUR_API_KEY" &
+elif [ "$choice" -eq 4 ]; then
   echo "Gathering Website Information"
-  read -p "Enter the target website: " website
+  read -r -p "Enter the target website: " website
   echo "Running SSL certificate check..."
-  openssl s_client -showcerts -servername $website -connect $website:443 </dev/null
+  openssl s_client -showcerts -servername "$website" -connect "$website":443 </dev/null
   echo "Running whatweb scan..."
-  whatweb $website
+  whatweb "$website"
   echo "Running nikto scan..."
-  nikto -h $website
+  nikto -h "$website"
   echo "Running dirb scan..."
-  dirb http://$website
-elif [ $choice -eq 5 ]; then
+  dirb "http://$website"
+elif [ "$choice" -eq 5 ]; then
   echo "Gathering Social Media Information"
-  read -p "Enter the target username: " username
+  read -r -p "Enter the target username: " username
   echo "Running social media search..."
   echo "Searching Twitter for $username..."
-  twint -u $username --json -o $username.json --retweets
+  twint -u "$username" --json -o "$username.json" --retweets
   echo "Searching Instagram for $username..."
-  instagram-scraper $username -u "YOUR_USERNAME" -p "YOUR_PASSWORD" --maximum 50 --media-types image --media-metadata --destination $username
-elif [ $choice -eq 6 ]; then
+  instagram-scraper "$username" -u "YOUR_USERNAME" -p "YOUR_PASSWORD" --maximum 50 --media-types image --media-metadata --destination "$username"
+elif [ "$choice" -eq 6 ]; then
   echo "Quitting"
 else
   echo "Invalid input, please choose a value between 1 and 6"
